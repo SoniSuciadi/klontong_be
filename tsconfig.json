@@ -1,21 +1,23 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
+    "target": "ES2023",
+    "strict": true, // Enable all strict type-checking options
+    "noImplicitAny": true, // This will prevent implicit `any` types
+    "strictNullChecks": true, // Ensure null and undefined are properly handled
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "strictPropertyInitialization": false,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
+    "declaration": true,
+    "removeComments": true,
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "incremental": true
   }
 }

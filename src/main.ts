@@ -1,8 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as dotenv from 'dotenv';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './common/all-exceptions';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  dotenv.config();
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+  });
+  app.setGlobalPrefix('api/v1');
+  app.useLogger(new Logger());
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
