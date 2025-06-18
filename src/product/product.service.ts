@@ -22,7 +22,7 @@ export class ProductService {
     search?: string,
     category?: string,
   ): Promise<Product[]> {
-    const categoryList = category?.split(',');
+    const categoryList = category?.split(',').filter((el) => !!el);
 
     const products = await this.prisma.$queryRaw<Product[]>`
       SELECT 

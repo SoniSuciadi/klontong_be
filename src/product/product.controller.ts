@@ -17,8 +17,14 @@ export class ProductController {
   }
 
   @Get('detail/:id')
-  async getProductDetail(@Param('id') id: string): Promise<ProductDetailDto> {
-    return this.productService.getProductDetail(id);
+  async getProductDetail(
+    @Param('id') id: string,
+  ): Promise<Data<ProductDetailDto>> {
+    const detail = await this.productService.getProductDetail(id);
+    return {
+      message: 'Success getProductDetail',
+      data: detail,
+    };
   }
 
   @Get('/')
