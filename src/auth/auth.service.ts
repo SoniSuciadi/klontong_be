@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { users } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -12,8 +13,9 @@ export class AuthService {
     name: string,
     password: string,
   ): Promise<users> {
+    const hashedPassword = await bcrypt.hash(password, 14);
     return await this.prisma.users.create({
-      data: { email, name, password },
+      data: { email, name, password: hashedPassword },
     });
   }
   async getUserByEmail(email: string): Promise<users> {
@@ -21,8 +23,9 @@ export class AuthService {
       where: { email },
     });
   }
+
   async generateTokens(
-    user: users,
+    user: Pick<users, 'id'>,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
       expiresIn: '1h',
@@ -34,7 +37,7 @@ export class AuthService {
     );
 
     await this.prisma.users.update({
-      where: { email: user.email },
+      where: { id: user.id },
       data: { refresh_token: refreshToken },
     });
 
@@ -56,6 +59,9 @@ export class AuthService {
 
       const user = await this.prisma.users.findUniqueOrThrow({
         where: { id: decoded.userId.toString() },
+        select: {
+          id: true,
+        },
       });
 
       if (!user) {
