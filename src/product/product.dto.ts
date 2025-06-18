@@ -13,3 +13,10 @@ export type ProductDetailDto = {
   updatedAt: Date;
   categoryName: string;
 };
+
+export type Product = {
+  name: string;
+  price: number;
+  id: string;
+  image: string;
+};

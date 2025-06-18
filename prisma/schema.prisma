@@ -7,7 +7,7 @@
 generator client {
   provider        = "prisma-client-js"
   output          = "../generated/prisma"
-  previewFeatures = ["postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions", "typedSql"]
 }
 
 datasource db {
@@ -21,16 +21,15 @@ model users {
   name          String
   password      String
   refresh_token String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
 }
 
 model categories {
-  id        String     @id @default(dbgenerated("gen_random_uuid()"))
-  name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  products  products[]
+  name       String     @id
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now()) @updatedAt
+  products   products[]
 }
 
 model products {
@@ -45,7 +44,7 @@ model products {
   image       String
   price       Int
   category_id String
-  category    categories @relation(fields: [category_id], references: [id])
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  category    categories @relation(fields: [category_id], references: [name])
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @default(now()) @updatedAt
 }

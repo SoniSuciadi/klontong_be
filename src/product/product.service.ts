@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ProductDetailDto } from './product.dto';
-
+import { Product, ProductDetailDto } from './product.dto';
+import { Prisma } from 'generated/prisma';
 @Injectable()
 export class ProductService {
   constructor(private readonly prisma: PrismaService) {}
@@ -16,15 +16,28 @@ export class ProductService {
     return categories.map((category) => category.name);
   }
 
-  async getProductList(): Promise<{ name: string; price: number }[]> {
-    const products = await this.prisma.products.findMany({
-      select: {
-        name: true,
-        price: true,
-        id: true,
-        image: true,
-      },
-    });
+  async getProductList(
+    cursor?: string,
+    limit: number = 10,
+    search?: string,
+    category?: string,
+  ): Promise<Product[]> {
+    const categoryList = category?.split(',');
+
+    const products = await this.prisma.$queryRaw<Product[]>`
+      SELECT 
+        p.id, 
+        p.name, 
+        p.price, 
+        p.image, 
+        p.category_id AS "categoryName"
+      FROM products p
+      WHERE p.name ILIKE ${`%${search || ''}%`}  
+      ${categoryList && categoryList.length > 0 ? Prisma.sql`AND p.category_id IN (${Prisma.join(categoryList)})` : Prisma.sql``}  
+      ${cursor ? Prisma.sql`AND p.id > ${cursor}` : Prisma.sql``}  
+      ORDER BY p.created_at DESC
+      LIMIT ${limit};  
+    `;
 
     return products;
   }
@@ -46,8 +59,8 @@ export class ProductService {
         weight: true,
         image: true,
         id: true,
-        createdAt: true,
-        updatedAt: true,
+        created_at: true,
+        updated_at: true,
         length: true,
         sku: true,
       },
@@ -59,7 +72,9 @@ export class ProductService {
 
     return {
       ...product,
-      categoryName: product.category?.name,
+      categoryName: product.category.name,
+      createdAt: product.created_at,
+      updatedAt: product.updated_at,
     };
   }
 }
