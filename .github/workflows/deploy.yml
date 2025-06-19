@@ -46,7 +46,6 @@ jobs:
             package-lock.json
             Dockerfile
             captain-definition
-            .env.production
             prisma/
             generated/
             tsconfig.json   
