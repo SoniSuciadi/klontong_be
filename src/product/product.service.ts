@@ -33,10 +33,10 @@ export class ProductService {
         p.category_id AS "categoryName"
       FROM products p
       WHERE p.name ILIKE ${`%${search || ''}%`}  
-      ${categoryList && categoryList.length > 0 ? Prisma.sql`AND p.category_id IN (${Prisma.join(categoryList)})` : Prisma.sql``}  
-      ${cursor ? Prisma.sql`AND p.id > ${cursor}` : Prisma.sql``}  
-      ORDER BY p.created_at DESC
-      LIMIT ${limit};  
+      ${categoryList?.length ? Prisma.sql`AND p.category_id IN (${Prisma.join(categoryList)})` : Prisma.empty}  
+      ${cursor ? Prisma.sql`AND p.id < ${cursor}` : Prisma.empty}  
+      ORDER BY p.id DESC 
+      LIMIT ${limit};
     `;
 
     return products;
@@ -75,6 +75,75 @@ export class ProductService {
       categoryName: product.category.name,
       createdAt: product.created_at,
       updatedAt: product.updated_at,
+      sku: product.sku || '',
     };
+  }
+  async createProduct(data: {
+    name: string;
+    description: string;
+    price: number;
+    categoryId: string;
+    height: number;
+    width: number;
+    weight: number;
+    image: string;
+    length: number;
+  }): Promise<Product> {
+    try {
+      const product = await this.prisma.products.create({
+        data: {
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          category_id: data.categoryId,
+          height: data.height,
+          width: data.width,
+          weight: data.weight,
+          image: data.image,
+          length: data.length,
+        },
+      });
+
+      return product;
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw new Error('Error creating product');
+    }
+  }
+  async updateProduct(data: {
+    id: string;
+    name?: string;
+    description?: string;
+    price?: number;
+    categoryId?: string;
+    height?: number;
+    width?: number;
+    weight?: number;
+    image?: string;
+    length?: number;
+  }): Promise<Product> {
+    try {
+      const product = await this.prisma.products.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          category_id: data.categoryId,
+          height: data.height,
+          width: data.width,
+          weight: data.weight,
+          image: data.image,
+          length: data.length,
+        },
+      });
+
+      return product;
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw new Error('Error updating product');
+    }
   }
 }

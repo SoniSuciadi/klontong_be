@@ -35,7 +35,7 @@ model categories {
 model products {
   id          String     @id @default(dbgenerated("gen_random_uuid()"))
   name        String
-  sku         String     @unique
+  sku         String?    @unique
   description String
   weight      Int
   width       Int

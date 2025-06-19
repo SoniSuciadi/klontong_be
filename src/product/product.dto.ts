@@ -1,3 +1,11 @@
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from '@nestjs/class-validator';
+
 export type ProductDetailDto = {
   id: string;
   sku: string;
@@ -20,3 +28,41 @@ export type Product = {
   id: string;
   image: string;
 };
+
+export class ProductDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsNumber()
+  @IsPositive()
+  price: number;
+
+  @IsString()
+  @IsNotEmpty()
+  categoryId: string;
+
+  @IsNumber()
+  @IsPositive()
+  height: number;
+
+  @IsNumber()
+  @IsPositive()
+  width: number;
+
+  @IsNumber()
+  @IsPositive()
+  weight: number;
+
+  @IsNumber()
+  @IsPositive()
+  length: number;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+}

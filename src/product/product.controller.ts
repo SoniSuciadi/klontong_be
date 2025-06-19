@@ -1,11 +1,26 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Product, ProductDetailDto } from './product.dto';
+import { ProductDto, Product, ProductDetailDto } from './product.dto';
 import { Data } from 'src/common/types';
+import { ImagekitService } from 'src/imagekit/imagekit.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly imagekitService: ImagekitService,
+  ) {}
 
   @Get('categories')
   async getCategories(): Promise<Data<string[]>> {
@@ -43,5 +58,41 @@ export class ProductController {
       message: 'Success getProductList',
       data,
     };
+  }
+  @Post()
+  @UseInterceptors(FileInterceptor('image')) // Handles image file upload
+  async createProduct(
+    @Body() createProductDto: ProductDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    let imageUrl = createProductDto.imageUrl;
+
+    if (image) {
+      imageUrl = await this.imagekitService.uploadImage(image); // Upload the image
+    }
+
+    return this.productService.createProduct({
+      ...createProductDto,
+      image: imageUrl || '',
+    });
+  }
+
+  @Patch('/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async updateProduct(
+    @Body() updateProductDto: ProductDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    let imageUrl = updateProductDto.imageUrl;
+    if (image) {
+      imageUrl = await this.imagekitService.uploadImage(image);
+    }
+
+    return this.productService.updateProduct({
+      ...updateProductDto,
+      image: imageUrl,
+      id,
+    });
   }
 }
