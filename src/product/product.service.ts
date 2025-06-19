@@ -146,4 +146,16 @@ export class ProductService {
       throw new Error('Error updating product');
     }
   }
+  async deleteProduct(id: string): Promise<void> {
+    try {
+      await this.prisma.products.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw new Error('Error deleting product');
+    }
+  }
 }

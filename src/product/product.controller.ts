@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -60,7 +61,7 @@ export class ProductController {
     };
   }
   @Post()
-  @UseInterceptors(FileInterceptor('image')) // Handles image file upload
+  @UseInterceptors(FileInterceptor('image'))
   async createProduct(
     @Body() createProductDto: ProductDto,
     @UploadedFile() image: Express.Multer.File,
@@ -68,7 +69,7 @@ export class ProductController {
     let imageUrl = createProductDto.imageUrl;
 
     if (image) {
-      imageUrl = await this.imagekitService.uploadImage(image); // Upload the image
+      imageUrl = await this.imagekitService.uploadImage(image);
     }
 
     return this.productService.createProduct({
@@ -94,5 +95,10 @@ export class ProductController {
       image: imageUrl,
       id,
     });
+  }
+
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id: string) {
+    return this.productService.deleteProduct(id);
   }
 }
