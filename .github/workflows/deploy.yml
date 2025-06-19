@@ -24,19 +24,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn' # Menggunakan cache Yarn
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          cache: 'npm'
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile # Menggunakan Yarn
+        run: npm install --frozen-lockfile
 
       - name: Generate Prisma Client
-        run: yarn prisma generate # Menggunakan Yarn
+        run: npx prisma generate
 
       - name: Build App
-        run: yarn build # Menggunakan Yarn
+        run: npm run build
 
       - name: Compress To Tar
         uses: a7ul/tar-action@v1.1.0
@@ -46,7 +43,7 @@ jobs:
           files: |
             dist/
             package.json
-            yarn.lock  # Menggunakan yarn.lock bukan package-lock.json
+            package-lock.json
             Dockerfile
             captain-definition
             prisma/
