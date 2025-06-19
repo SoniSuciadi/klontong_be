@@ -29,6 +29,9 @@ jobs:
       - name: Install Dependencies
         run: npm install --frozen-lockfile
 
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
       - name: Build App
         run: npm run build
 
@@ -43,6 +46,8 @@ jobs:
             package-lock.json
             Dockerfile
             captain-definition
+            prisma/
+            generated/
           outPath: deploy.tar
 
       - name: Deploy App to CapRover
