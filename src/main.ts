@@ -13,7 +13,7 @@ async function bootstrap() {
   console.log(process.env.FE_ORIGIN, '-----------');
   app.setGlobalPrefix('api/v1');
   app.enableCors({
-    origin: process.env.FE_ORIGIN,
+    origin: process.env?.FE_ORIGIN?.split(','),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: [
       'Content-Type',
