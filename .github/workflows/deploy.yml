@@ -48,7 +48,7 @@ jobs:
             captain-definition
             prisma/
             generated/
-            tsconfig.json   
+            tsconfig.json
             nest-cli.json
           outPath: deploy.tar
 
