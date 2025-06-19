@@ -15,9 +15,19 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.FE_ORIGIN,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: '*',
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'Referer',
+      'sec-ch-ua',
+      'sec-ch-ua-platform',
+      'sec-ch-ua-mobile',
+    ],
     credentials: true,
   });
+
   app.use(cookieParser());
 
   app.useLogger(new Logger());
