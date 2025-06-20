@@ -48,6 +48,8 @@ jobs:
             captain-definition
             prisma/
             generated/
+            tsconfig.json
+            nest-cli.json
           outPath: deploy.tar
 
       - name: Deploy App to CapRover

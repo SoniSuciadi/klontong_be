@@ -10,14 +10,26 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
-
+  console.log(process.env.FE_ORIGIN, '-----------');
+  console.log(process.env.COOKIE_DOMAIN, '-----------');
+  console.log(process.env.NODE_ENV, '-----------');
   app.setGlobalPrefix('api/v1');
   app.enableCors({
-    origin: process.env.FE_ORIGIN,
+    origin: process.env?.FE_ORIGIN?.split(','),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization',
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'Referer',
+      'sec-ch-ua',
+      'sec-ch-ua-platform',
+      'sec-ch-ua-mobile',
+    ],
     credentials: true,
   });
+
   app.use(cookieParser());
 
   app.useLogger(new Logger());
