@@ -31,6 +31,23 @@
 $ yarn install
 ```
 
+# Setup environment variables
+
+## Buat file .env berdasarkan .env.example
+
+```bash
+$ cp .env.example .env
+```
+
+# Setup environment variables
+
+## Buat file .env berdasarkan .env.example
+
+```bash
+$ npx prisma migrate dev
+$ npx prisma generate
+```
+
 ## Compile and run the project
 
 ```bash
