@@ -11,6 +11,8 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
   console.log(process.env.FE_ORIGIN, '-----------');
+  console.log(process.env.COOKIE_DOMAIN, '-----------');
+  console.log(process.env.NODE_ENV, '-----------');
   app.setGlobalPrefix('api/v1');
   app.enableCors({
     origin: process.env?.FE_ORIGIN?.split(','),

@@ -101,6 +101,14 @@ export class AuthController {
       domain:
         process.env.NODE_ENV == 'production' ? process.env.COOKIE_DOMAIN : '',
     });
+    console.log({
+      httpOnly: process.env.NODE_ENV == 'production',
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV == 'production',
+      path: '/',
+      domain:
+        process.env.NODE_ENV == 'production' ? process.env.COOKIE_DOMAIN : '',
+    });
 
     res.status(HttpStatus.OK).json({
       message: 'Success refresh',
